@@ -34,10 +34,11 @@ def Compare(lbp_feature1):
 
 
 # 讀取图像
-img = cv2.imread('course\\hw3\\way.jpg')
+img = cv2.imread(r'C:\Users\user\Desktop\lbp_watershed\way.jpg')
 #img = cv2.resize(img, (1200, 800), interpolation=cv2.INTER_NEAREST)
 img=cv2.resize(img,(1500,800))
-result = img.copy()#分水嶺
+Segmentation = img.copy()#分水嶺
+result = img.copy()
 markers = np.zeros((img.shape[0],img.shape[1]),dtype=np.int32)
 cv2.imshow('Window1', img)
 
@@ -61,17 +62,22 @@ Compare(lbp_feature0)
 
 markers[0:100, :100]=2  #後景視窗
 markers[0:100, 1400:1500]=2
+img_markers = np.zeros((img.shape[0],img.shape[1]),dtype=np.uint8)
+img_markers[markers == 1] = 127
+img_markers[markers == 2] = 255
+
+cv2.imshow('markers',img_markers)
 
 
-markers = cv2.watershed(img,markers)
-img[markers == -1] = [255,0,0]
+markers = cv2.watershed(result,markers)
+result[markers == -1] = [255,0,0]
 
 # 可視化分割结果
 
-result[markers == 1] = [0, 0, 255]  # 前景
-result[markers == 2] = [255, 0, 0]  #後景
-cv2.imshow('Segmentation Result', result)
-cv2.imshow('Window', img)
+Segmentation[markers == 1] = [0, 0, 255]  # 前景
+Segmentation[markers == 2] = [255, 0, 0]  #後景
+cv2.imshow('Segmentation Result', Segmentation)
+cv2.imshow('Window', result)
 end = time.time()
 time1=end-start
 print('執行時間:',time1)
